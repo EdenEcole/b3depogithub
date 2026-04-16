@@ -31,7 +31,10 @@ pipeline {
                 sh 'sudo apt upgrade -y'
             }
         }
-
+              stage('Pull image Nginx') {
+            steps {
+                sh 'sudo docker pull nginx'
+            }
 
         }
     }
