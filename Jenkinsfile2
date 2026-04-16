@@ -1,13 +1,41 @@
-## sudo apt remove
+pipeline {
+    agent any
 
-sudo apt update
-sudo apt install apt-transport https ca certificates curl software properties
-sudo apt install docker.io -y
-sudo chmod 666 /var/run/docker.stock
-sudo usermod aG docker $USER
-sudo systemctl status docker.service
-docker network ls 
-docker image ls
-sudo apt list upgradable a
-sudo apt upgrade y
-sudo docker pull nginx
+    stages {
+        stage('Mise à jour système') {
+            steps {
+                sh 'sudo apt update'
+                sh 'sudo apt install -y apt-transport-https ca-certificates curl software-properties-common'
+            }
+        }
+
+        stage('Installation Docker') {
+            steps {
+                sh 'sudo apt install -y docker.io'
+                sh 'sudo chmod 666 /var/run/docker.sock'
+                sh 'sudo usermod -aG docker $USER'
+            }
+        }
+
+        stage('Vérification Docker') {
+            steps {
+                sh 'sudo systemctl status docker.service'
+                sh 'docker network ls'
+                sh 'docker image ls'
+            }
+        }
+
+        stage('Mise à jour des paquets') {
+            steps {
+                sh 'sudo apt list --upgradable'
+                sh 'sudo apt upgrade -y'
+            }
+        }
+
+        stage('Pull image Nginx') {
+            steps {
+                sh 'sudo docker pull nginx'
+            }
+        }
+    }
+}
