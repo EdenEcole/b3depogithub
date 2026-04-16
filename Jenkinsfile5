@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    stages {
+        stage('ChekOut-SCM') {
+            steps {
+                cleanWs()
+                git branch: 'main', credentialsId: 'user-EdenEcole', url: 'https://github.com/EdenEcole/b3depogithub.git'
+            }
+        }
+        stage('Create-macvlan192') {
+            steps {
+                sh 'docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.254 -o parent=ens33 macvlan192'
+                sh 'docker network ls'
+                sh 'docker inspect macvlan192'
+            }
+        }
+    }
+}
